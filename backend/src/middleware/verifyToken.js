@@ -9,12 +9,11 @@ async function verifyToken(req, res, next) {
     }
     const decodedToken = await admin.auth().verifyIdToken(token);
 
-    const uid = decodedToken.uid;
-    const email = decodedToken.email;
+    const { uid, name, email, picture } = decodedToken;
 
-    console.log("Logged", email);
-
-    res.status(200).send({ message: "Verify success", uid: uid, email: email });
+    res
+      .status(200)
+      .json({ message: "Verify success", uid, name, email, picture });
   } catch (error) {
     res.status(500).send({ message: "Server Internal Error" });
   }

@@ -1,7 +1,10 @@
 import Card from "@/components/Card";
+import useSession from "@/hooks/useSession";
 import { Link } from "react-router-dom";
 
-const HomePage = () => {
+const Home = () => {
+  const { user } = useSession();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4">
       {/* Hero Section */}
@@ -58,4 +61,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

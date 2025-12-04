@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import userRouter from "./router/users.js";
 import authRouter from "./router/auth.js";
 import matchRouter from "./router/matches.js";
@@ -7,7 +8,16 @@ import matchRouter from "./router/matches.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 // Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
