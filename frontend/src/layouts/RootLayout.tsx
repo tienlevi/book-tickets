@@ -1,25 +1,19 @@
 import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import Modal from "@/components/Modal";
 import useLoginGoogle from "@/hooks/useLoginGoogle";
-import GoogleIcon from "@/components/icons/GoogleIcon";
+import useSession from "@/hooks/useSession";
+import useLogout from "@/hooks/useLogout";
 
 const RootLayout = () => {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const { loginGoogle, isPending } = useLoginGoogle();
-
-  const handleOpenLoginModal = () => {
-    setIsLoginModalOpen(true);
-  };
-
-  const handleCloseLoginModal = () => {
-    setIsLoginModalOpen(false);
-  };
+  const { user } = useSession();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loginGoogle } = useLoginGoogle();
+  const { logout, isPending } = useLogout();
 
   const handleGoogleLogin = async () => {
     await loginGoogle();
-    handleCloseLoginModal();
+    setIsModalOpen(false);
   };
 
   return (
@@ -47,14 +41,23 @@ const RootLayout = () => {
               >
                 Home
               </Link>
-              <button
-                type="button"
-                onClick={handleOpenLoginModal}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-purple-500/25"
-                aria-label="Open login modal"
-              >
-                Login
-              </button>
+              {user ? (
+                <div
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-purple-500/25 cursor-pointer"
+                >
+                  {user.name}
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-purple-500/25 cursor-pointer"
+                  aria-label="Open login modal"
+                >
+                  Login
+                </button>
+              )}
             </div>
           </div>
         </nav>
@@ -65,27 +68,28 @@ const RootLayout = () => {
       </main>
 
       <Modal
-        isOpen={isLoginModalOpen}
-        onClose={handleCloseLoginModal}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         title="Welcome Back"
       >
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          disabled={isPending}
-          className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800 font-medium py-3 px-4 rounded-xl transition-colors"
-          aria-label="Sign in with Google"
-        >
-          {isPending ? (
-            <Loader2
-              className="h-5 w-5 animate-spin text-gray-600"
-              aria-hidden="true"
-            />
-          ) : (
-            <GoogleIcon className="w-5 h-5" />
-          )}
-          {isPending ? "Signing in..." : "Continue with Google"}
-        </button>
+        {user ? (
+          <button
+            disabled={isPending}
+            onClick={() => logout()}
+            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800 font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer"
+          >
+            Logout
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800 font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer"
+            aria-label="Sign in with Google"
+          >
+            Continue with Google
+          </button>
+        )}
       </Modal>
     </div>
   );
