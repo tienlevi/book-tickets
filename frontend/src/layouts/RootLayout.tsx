@@ -1,9 +1,15 @@
-import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
-import Modal from "@/components/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  Button,
+} from "@/components/ui";
 import useLoginGoogle from "@/hooks/useLoginGoogle";
 import useSession from "@/hooks/useSession";
 import useLogout from "@/hooks/useLogout";
+import { useState } from "react";
 
 const RootLayout = () => {
   const { user } = useSession();
@@ -42,21 +48,21 @@ const RootLayout = () => {
                 Home
               </Link>
               {user ? (
-                <div
+                <Button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-purple-500/25 cursor-pointer"
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-lg shadow-purple-500/25"
+                  aria-label="Open user menu"
                 >
                   {user.name}
-                </div>
+                </Button>
               ) : (
-                <button
-                  type="button"
+                <Button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-purple-500/25 cursor-pointer"
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-lg shadow-purple-500/25"
                   aria-label="Open login modal"
                 >
                   Login
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -67,30 +73,35 @@ const RootLayout = () => {
         <Outlet />
       </main>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Welcome Back"
-      >
-        {user ? (
-          <button
-            disabled={isPending}
-            onClick={() => logout()}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800 font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer"
-          >
-            Logout
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800 font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer"
-            aria-label="Sign in with Google"
-          >
-            Continue with Google
-          </button>
-        )}
-      </Modal>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="bg-slate-900 border-white/10 text-white sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-white">Welcome Back</DialogTitle>
+          </DialogHeader>
+          <div className="pt-4">
+            {user ? (
+              <Button
+                disabled={isPending}
+                onClick={() => logout()}
+                variant="secondary"
+                className="w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-6"
+                aria-label="Logout"
+              >
+                Logout
+              </Button>
+            ) : (
+              <Button
+                onClick={handleGoogleLogin}
+                variant="secondary"
+                className="w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-6"
+                aria-label="Sign in with Google"
+              >
+                Continue with Google
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
