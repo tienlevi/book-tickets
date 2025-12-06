@@ -1,15 +1,6 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui";
-import useSession from "@/hooks/useSession";
+import Matches from "@/components/Matches/Matches";
 
 const Home = () => {
-  const { user } = useSession();
-
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4">
       {/* Hero Section */}
@@ -23,23 +14,7 @@ const Home = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-5xl mx-auto">
-        <Card className="bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-colors">
-          <CardHeader>
-            <span className="text-4xl mb-2 block">{"🔒"}</span>
-            <CardTitle className="text-xl text-white">
-              {"Secure Payments"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-400">
-              {
-                "Your transactions are protected with industry-standard encryption"
-              }
-            </CardDescription>
-          </CardContent>
-        </Card>
-      </div>
+      <Matches />
     </div>
   );
 };

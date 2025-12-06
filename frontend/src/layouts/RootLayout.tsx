@@ -69,14 +69,16 @@ const RootLayout = () => {
         </nav>
       </header>
 
-      <main>
+      <main className="max-w-7xl mx-auto">
         <Outlet />
       </main>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="bg-slate-900 border-white/10 text-white sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-xl text-white">Welcome Back</DialogTitle>
+            <DialogTitle className="text-xl text-white">
+              Welcome Back
+            </DialogTitle>
           </DialogHeader>
           <div className="pt-4">
             {user ? (
