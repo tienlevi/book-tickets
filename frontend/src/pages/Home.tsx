@@ -13,7 +13,6 @@ const Home = () => {
         </h1>
       </div>
 
-      {/* Features Grid */}
       <Matches />
     </div>
   );

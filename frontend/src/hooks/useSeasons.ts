@@ -8,8 +8,9 @@ export function useSeasons() {
     queryKey: [QUERY_KEY.SEASONS],
     queryFn: async () => {
       const result = await getSeasons();
-      return result;
+      return result || [];
     },
+    initialData: [],
   });
 }
 
