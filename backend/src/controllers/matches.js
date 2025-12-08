@@ -6,8 +6,9 @@ export const getSeasonsController = async (req, res) => {
     const response = await getSeasons();
     return res.status(200).json(response.seasons);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -17,7 +18,8 @@ export const getMatchesController = async (req, res) => {
     const response = await getMatches(seasonId, round);
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };

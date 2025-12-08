@@ -11,5 +11,3 @@ export function useMatches(seasonId: number, round: number) {
     },
   });
 }
-
-export function useMatchById(id: number) {}

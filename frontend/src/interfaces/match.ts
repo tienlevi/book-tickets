@@ -1,3 +1,5 @@
+import { MatchStatus } from "./types";
+
 export interface ICountry {
   alpha2: string;
   alpha3: string;
@@ -68,7 +70,7 @@ export interface IRoundInfo {
 export interface IMatchStatus {
   code: number;
   description: string;
-  type: string;
+  type: MatchStatus;
 }
 
 export interface ITeamColors {
@@ -96,11 +98,16 @@ export interface ITeam {
 }
 
 export interface IScore {
+  aggregated: number;
   current: number;
   display: number;
   period1: number;
   period2: number;
   normaltime: number;
+  extra1: number;
+  extra2: number;
+  overtime: number;
+  penalties: number;
 }
 
 export interface IMatchTime {
