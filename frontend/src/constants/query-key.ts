@@ -3,4 +3,5 @@ export const QUERY_KEY = {
   AUTH: "auth",
   SEASONS: "seasons",
   MATCHES: "matches",
+  ROUNDS: "rounds",
 };

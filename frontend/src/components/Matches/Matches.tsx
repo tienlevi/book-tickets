@@ -12,22 +12,34 @@ import { Spinner } from "@/components/ui/spinner";
 import { clubImage } from "@/utils/images";
 import { formatMatchDate } from "@/utils/format";
 import { MatchStatus } from "@/interfaces/types";
+import useRound from "@/hooks/useRound";
+import { useNavigate } from "react-router-dom";
 
 function Matches() {
+  const params = new URL(window.location.href);
+  const seasonId = params.searchParams.get("seasonId");
+  const roundParams = params.searchParams.get("round");
+  const navigate = useNavigate();
   const { data: seasons, isLoading: loadingSeasons } = useSeasons();
   const currentSeason = seasons[0]?.id;
-  const params = new URLSearchParams();
-  const seasonId = params.get("seasonId");
-  const round = params.get("round");
-  const [selectedSeason, setSelectedSeason] = useState<number>(
-    Number(seasonId) || currentSeason
-  );
-  const [selectedRound, setSelectedRound] = useState(round);
+  const [selectedSeason, setSelectedSeason] = useState(Number(seasonId));
+  const { data: round, isLoading: loadingRounds } = useRound(selectedSeason);
+  const [selectedRound, setSelectedRound] = useState(Number(roundParams));
   const { data: match, isLoading: loadingMatches } = useMatches(
     selectedSeason,
-    16
+    selectedRound!
   );
-  const isLoading = loadingSeasons || loadingMatches;
+  const isLoading = loadingSeasons || loadingMatches || loadingRounds;
+
+  const handleSelectSeason = (value: string) => {
+    navigate(`/?seasonId=${value}&round=${selectedRound}`);
+    setSelectedSeason(+value);
+  };
+
+  const handleSelectRound = (value: string) => {
+    navigate(`/?seasonId=${selectedSeason}&round=${value}`);
+    setSelectedRound(+value);
+  };
 
   const renderStatus = (status: MatchStatus) => {
     switch (status) {
@@ -41,35 +53,58 @@ function Matches() {
   };
 
   useEffect(() => {
-    if (currentSeason) {
+    if (!seasonId) {
       setSelectedSeason(currentSeason);
     }
-  }, [seasons]);
+    if (!roundParams) {
+      setSelectedRound(round?.currentRound?.round ?? 1);
+    }
+  }, [selectedRound, selectedSeason, seasons, round]);
 
   if (isLoading) {
-    return <Spinner />;
+    return <Spinner className="size-10! text-white" />;
   }
 
   return (
     <div className="w-full p-6">
       {/* Season Selector */}
-      <div className="mb-8">
-        <Select
-          value={selectedSeason?.toString()}
-          defaultValue={seasons?.[0]?.id.toString()}
-          onValueChange={(value) => setSelectedSeason(+value)}
-        >
-          <SelectTrigger variant="primary" className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent variant="primary" className="h-[200px]">
-            {seasons.map((season) => (
-              <SelectItem key={season.id} value={season.id.toString()}>
-                {season.year}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="space-y-4 mb-8">
+        <div className="flex items-center gap-2">
+          <div className="text-white">Season: </div>
+          <Select
+            value={selectedSeason?.toString()}
+            onValueChange={handleSelectSeason}
+          >
+            <SelectTrigger variant="primary" className="w-[200px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent variant="primary" className="h-[200px]">
+              {seasons.map((season) => (
+                <SelectItem key={season.id} value={season.id.toString()}>
+                  {season.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="text-white">Round: </div>
+          <Select
+            value={selectedRound?.toString()}
+            onValueChange={handleSelectRound}
+          >
+            <SelectTrigger variant="primary" className="w-[200px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent variant="primary" className="h-[200px]">
+              {round?.rounds.map((round) => (
+                <SelectItem key={round.round} value={round.round.toString()}>
+                  {round.round}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Matches Grid */}

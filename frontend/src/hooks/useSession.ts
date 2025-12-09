@@ -9,6 +9,7 @@ function useSession() {
     queryFn: async () => {
       return await getAuth();
     },
+    enabled: !!token,
   });
 
   return { user, ...rest };

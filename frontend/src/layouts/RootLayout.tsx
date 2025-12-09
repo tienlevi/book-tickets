@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import useSession from "@/hooks/useSession";
 import useLogout from "@/hooks/useLogout";
 import { useState } from "react";
 
-const RootLayout = () => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { loginGoogle } = useLoginGoogle();
@@ -69,9 +69,7 @@ const RootLayout = () => {
         </nav>
       </header>
 
-      <main className="max-w-7xl mx-auto">
-        <Outlet />
-      </main>
+      <main className="max-w-7xl mx-auto">{children}</main>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="bg-slate-900 border-white/10 text-white sm:max-w-md">

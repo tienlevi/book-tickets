@@ -110,3 +110,7 @@
 .animate-scale-in {
   animation: scale-in 0.2s ease-out;
 }
+
+.bg-gradient-main {
+  background: linear-gradient(to bottom right, #0f172a, #581c87, #0f172a);
+}
