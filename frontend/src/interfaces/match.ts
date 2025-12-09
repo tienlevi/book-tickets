@@ -1,24 +1,25 @@
 import { MatchStatus } from "./types";
 
-export interface ICountry {
+// Match list
+interface ICountry {
   alpha2: string;
   alpha3: string;
   name: string;
   slug: string;
 }
 
-export interface ISport {
+interface ISport {
   name: string;
   slug: string;
   id: number;
 }
 
-export interface IFieldTranslations {
+interface IFieldTranslations {
   nameTranslation: Record<string, string>;
   shortNameTranslation: Record<string, string>;
 }
 
-export interface ICategory {
+interface ICategory {
   name: string;
   slug: string;
   sport: ISport;
@@ -29,7 +30,7 @@ export interface ICategory {
   fieldTranslations: IFieldTranslations;
 }
 
-export interface IUniqueTournament {
+interface IUniqueTournament {
   name: string;
   slug: string;
   primaryColorHex: string;
@@ -44,7 +45,7 @@ export interface IUniqueTournament {
   fieldTranslations: IFieldTranslations;
 }
 
-export interface ITournament {
+interface ITournament {
   name: string;
   slug: string;
   category: ICategory;
@@ -56,30 +57,30 @@ export interface ITournament {
   fieldTranslations: IFieldTranslations;
 }
 
-export interface ISeason {
+interface ISeason {
   name: string;
   year: string;
   editor: boolean;
   id: number;
 }
 
-export interface IRoundInfo {
+interface IRoundInfo {
   round: number;
 }
 
-export interface IMatchStatus {
+interface IMatchStatus {
   code: number;
   description: string;
   type: MatchStatus;
 }
 
-export interface ITeamColors {
+interface ITeamColors {
   primary: string;
   secondary: string;
   text: string;
 }
 
-export interface ITeam {
+interface ITeam {
   name: string;
   slug: string;
   shortName: string;
@@ -97,7 +98,7 @@ export interface ITeam {
   fieldTranslations: IFieldTranslations;
 }
 
-export interface IScore {
+interface IScore {
   aggregated: number;
   current: number;
   display: number;
@@ -110,18 +111,18 @@ export interface IScore {
   penalties: number;
 }
 
-export interface IMatchTime {
+interface IMatchTime {
   injuryTime1?: number;
   injuryTime2?: number;
   currentPeriodStartTimestamp: number;
 }
 
-export interface IMatchChanges {
+interface IMatchChanges {
   changes: string[];
   changeTimestamp: number;
 }
 
-export interface IVarInProgress {
+interface IVarInProgress {
   homeTeam: boolean;
   awayTeam: boolean;
 }
@@ -157,4 +158,49 @@ export interface IMatchEvent {
 export interface IMatch {
   events: IMatchEvent[];
   hasNextPage: boolean;
+}
+
+// Match Detail
+interface IVenue {
+  city: ICity;
+  stadium: IStadium;
+  id: number;
+  country: ICountry;
+}
+
+interface ICity {
+  name: string;
+}
+
+interface IStadium {
+  name: string;
+  capacity: number;
+}
+
+interface IReferee {
+  name: string;
+  slug: string;
+  yellowCards: number;
+  redCards: number;
+  yellowRedCards: number;
+  games: number;
+  id: number;
+  country: ICountry;
+}
+
+export interface IMatchDetailEvent extends IMatchEvent {
+  correctAiInsight: boolean;
+  correctHalftimeAiInsight: boolean;
+  venue: IVenue;
+  referee: IReferee;
+  defaultPeriodCount: number;
+  defaultPeriodLength: number;
+  defaultOvertimeLength: number;
+  currentPeriodStartTimestamp: number;
+  seasonStatisticsType: string;
+  showTotoPromo: boolean;
+}
+
+export interface IMatchDetail {
+  event: IMatchDetailEvent;
 }

@@ -13,7 +13,7 @@ import { clubImage } from "@/utils/images";
 import { formatMatchDate } from "@/utils/format";
 import { MatchStatus } from "@/interfaces/types";
 import useRound from "@/hooks/useRound";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Matches() {
   const params = new URL(window.location.href);
@@ -109,14 +109,15 @@ function Matches() {
 
       {/* Matches Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {match?.events.map((match) => (
-          <div
+        {match?.events.map((matchItem) => (
+          <Link
             className="group relative bg-linear-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer"
-            key={`Match: ${match.homeTeam.name} vs ${match.awayTeam.name}`}
+            key={`Match: ${matchItem.homeTeam.name} vs ${matchItem.awayTeam.name}`}
+            to={`/match/${matchItem.id}?slug=${matchItem.slug}`}
           >
             {/* Match Time Badge */}
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-              {formatMatchDate(match.startTimestamp)}
+              {formatMatchDate(matchItem.startTimestamp)}
             </div>
 
             {/* Teams Container */}
@@ -125,14 +126,14 @@ function Matches() {
               <div className="flex flex-col items-center gap-3 flex-1">
                 <div className="w-16 h-16 rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
                   <img
-                    src={clubImage(match.homeTeam.id)}
-                    alt={`${match.homeTeam.name} logo`}
+                    src={clubImage(matchItem.homeTeam.id)}
+                    alt={`${matchItem.homeTeam.name} logo`}
                     className="w-full h-full object-contain"
                     loading="lazy"
                   />
                 </div>
                 <span className="text-white font-semibold text-sm text-center line-clamp-2">
-                  {match.homeTeam.name}
+                  {matchItem.homeTeam.name}
                 </span>
               </div>
 
@@ -140,7 +141,7 @@ function Matches() {
               <div className="flex items-center gap-2">
                 <div className="bg-white/5 rounded-lg px-4 py-2 border border-white/10">
                   <span className="text-emerald-400 font-bold text-lg">
-                    {match.homeScore.display || 0}
+                    {matchItem.homeScore.display || 0}
                   </span>
                 </div>
                 <span className="text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-cyan-400">
@@ -148,7 +149,7 @@ function Matches() {
                 </span>
                 <div className="bg-white/5 rounded-lg px-4 py-2 border border-white/10">
                   <span className="text-emerald-400 font-bold text-lg">
-                    {match.awayScore.display || 0}
+                    {matchItem.awayScore.display || 0}
                   </span>
                 </div>
               </div>
@@ -157,20 +158,22 @@ function Matches() {
               <div className="flex flex-col items-center gap-3 flex-1">
                 <div className="w-16 h-16 rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
                   <img
-                    src={clubImage(match.awayTeam.id)}
-                    alt={`${match.awayTeam.name} logo`}
+                    src={clubImage(matchItem.awayTeam.id)}
+                    alt={`${matchItem.awayTeam.name} logo`}
                     className="w-full h-full object-contain"
                     loading="lazy"
                   />
                 </div>
                 <span className="text-white font-semibold text-sm text-center line-clamp-2">
-                  {match.awayTeam.name}
+                  {matchItem.awayTeam.name}
                 </span>
               </div>
             </div>
 
-            <div className="text-center">{renderStatus(match.status.type)}</div>
-          </div>
+            <div className="text-center">
+              {renderStatus(matchItem.status.type)}
+            </div>
+          </Link>
         ))}
       </div>
     </div>

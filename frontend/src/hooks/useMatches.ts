@@ -9,5 +9,6 @@ export function useMatches(seasonId: number, round: number) {
     queryFn: async () => {
       return await getMatches(seasonId, round);
     },
+    enabled: !!seasonId && !!round,
   });
 }

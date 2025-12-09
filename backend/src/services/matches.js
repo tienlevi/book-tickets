@@ -6,3 +6,8 @@ export const getMatches = async (seasonId, round) => {
   );
   return response.data;
 };
+
+export const getMatchById = async (matchId) => {
+  const response = await sofascoreApi.get(`/event/${matchId}`);
+  return response.data;
+};

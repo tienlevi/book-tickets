@@ -5,6 +5,7 @@ import Routes from "@/interfaces/route";
 import { Spinner } from "@/components/ui/spinner";
 
 const Home = lazy(() => delayForLoading(import("@/pages/Home")));
+const MatchDetail = lazy(() => delayForLoading(import("@/pages/MatchDetail")));
 
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
   <Suspense
@@ -26,6 +27,16 @@ export const router: Routes[] = [
     element: (
       <SuspenseWrapper>
         <Home />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    href: "/match/:matchId",
+    id: "match-detail",
+    name: "Match Detail",
+    element: (
+      <SuspenseWrapper>
+        <MatchDetail />
       </SuspenseWrapper>
     ),
   },
