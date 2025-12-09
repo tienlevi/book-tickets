@@ -1,5 +1,7 @@
+import { auth } from "@/configs/firebase";
 import { QUERY_KEY } from "@/constants/query-key";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { signOut } from "firebase/auth";
 
 const useLogout = () => {
   const queryClient = useQueryClient();
@@ -8,6 +10,7 @@ const useLogout = () => {
     mutationKey: ["logout"],
     mutationFn: async () => {
       localStorage.removeItem("accessToken");
+      await signOut(auth);
       return Promise.resolve();
     },
     onSuccess: () => {
