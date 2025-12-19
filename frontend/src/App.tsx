@@ -3,12 +3,14 @@ import { router } from "@/routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ScrollToTop from "./hooks/useScrollToTop";
 import NotFoundPage from "./pages/NotFoundPage";
+import { ToastContainer } from "react-toastify";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
+      <ToastContainer />
       <BrowserRouter>
         <ScrollToTop />
         <Routes>

@@ -4,4 +4,5 @@ export const QUERY_KEY = {
   SEASONS: "seasons",
   MATCHES: "matches",
   ROUNDS: "rounds",
+  TICKETS: "tickets",
 };

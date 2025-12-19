@@ -15,11 +15,7 @@ type LoginResponse = {
 const useLoginGoogle = () => {
   const provider = new GoogleAuthProvider();
 
-  const { mutate, isPending, isSuccess, isError, error } = useMutation<
-    LoginResponse,
-    Error,
-    string
-  >({
+  const { mutate, ...rest } = useMutation<LoginResponse, Error, string>({
     mutationKey: ["login-google"],
     mutationFn: async (idToken: string) => {
       return await login({ idToken });
@@ -39,10 +35,7 @@ const useLoginGoogle = () => {
 
   return {
     loginGoogle,
-    isPending,
-    isSuccess,
-    isError,
-    error,
+    ...rest,
   };
 };
 

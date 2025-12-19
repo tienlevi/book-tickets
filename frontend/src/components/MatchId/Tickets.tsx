@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui";
+import useBookTicket from "@/hooks/useBookTicket";
 import { IMatchDetailEvent } from "@/interfaces/match";
 import { Ticket } from "lucide-react";
 
@@ -13,6 +14,16 @@ interface Props {
 }
 
 function Tickets({ match }: Props) {
+  const { mutate, isPending } = useBookTicket();
+
+  const handleBookTicket = () => {
+    mutate({
+      matchId: match.id,
+      seasonId: match.season.id,
+      round: match.roundInfo.round,
+    });
+  };
+
   return (
     <Card className="bg-slate-800/50 border-white/10 backdrop-blur-sm">
       <CardHeader>
@@ -29,9 +40,9 @@ function Tickets({ match }: Props) {
               now.
             </p>
             <Button
+              onClick={handleBookTicket}
+              disabled={isPending}
               className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-6 shadow-lg shadow-purple-500/25"
-              aria-label="Book tickets for this match"
-              tabIndex={0}
             >
               Book Now
             </Button>

@@ -1,5 +1,5 @@
-import { instance } from "@/configs/axios";
+// import { instance } from "@/configs/axios";
 
-export const getUser = async (token: string) => {
-  const response = await instance.get("/user");
-};
+// export const getUser = async (token: string) => {
+//   const response = await instance.get("/user");
+// };
