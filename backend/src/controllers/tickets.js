@@ -7,6 +7,17 @@ export const createTicket = async (req, res) => {
   const now = new Date().getTime();
   const redis = await redisClient();
   try {
+    const existingTicket = await redis.json.get(
+      `uid:${uid}:match:${matchId}`,
+      "$"
+    );
+    const data = await redis.json.set(`uid:${uid}:match:${matchId}`, "$", {
+      uid,
+      matchId,
+      seasonId,
+      round,
+      created_at: now,
+    });
     if (existingTicket) {
       return res.status(400).json({
         message: "You already have a ticket for this match",
@@ -15,8 +26,8 @@ export const createTicket = async (req, res) => {
     }
 
     return res.status(201).json({
+      data,
       message: "Ticket booked successfully",
-      ticket: newTicket,
     });
   } catch (error) {
     console.log(error);
@@ -26,8 +37,6 @@ export const createTicket = async (req, res) => {
 
 export const cancelTicket = async (req, res) => {
   const { uid, matchId } = req.params;
-  console.log("🚀 ~ cancelTicket ~ matchId:", matchId);
-  console.log("🚀 ~ cancelTicket ~ uid:", uid);
   const redis = await redisClient();
   try {
     if (!uid || !matchId) {
