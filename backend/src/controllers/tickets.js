@@ -1,5 +1,4 @@
 import redisClient from "../configs/redis.js";
-import { REDIS_KEY } from "../constants/key.js";
 
 export const getTicketsByMatchId = async (req, res) => {};
 
@@ -8,31 +7,12 @@ export const createTicket = async (req, res) => {
   const now = new Date().getTime();
   const redis = await redisClient();
   try {
-    const tickets = await redis.lrange(REDIS_KEY.TICKETS, 0, -1);
-
-    const existingTicket = tickets.find(
-      (ticket) =>
-        ticket.uid === uid &&
-        ticket.matchId === matchId &&
-        ticket.round === round
-    );
-
     if (existingTicket) {
       return res.status(400).json({
         message: "You already have a ticket for this match",
         ticket: existingTicket,
       });
     }
-
-    const newTicket = {
-      uid,
-      matchId,
-      seasonId,
-      round,
-      created_at: now,
-    };
-
-    await redis.lpush(REDIS_KEY.TICKETS, JSON.stringify(newTicket));
 
     return res.status(201).json({
       message: "Ticket booked successfully",
@@ -45,7 +25,21 @@ export const createTicket = async (req, res) => {
 };
 
 export const cancelTicket = async (req, res) => {
+  const { uid, matchId } = req.params;
+  console.log("🚀 ~ cancelTicket ~ matchId:", matchId);
+  console.log("🚀 ~ cancelTicket ~ uid:", uid);
+  const redis = await redisClient();
   try {
+    if (!uid || !matchId) {
+      return res.status(404).json({ message: "User or match not found" });
+    }
+    const cancel = await redis.lrem(
+      REDIS_KEY.TICKETS,
+      0,
+      JSON.stringify({ uid, matchId })
+    );
+    redis.del;
+    return res.status(200).json({ cancel, message: "Cancel ticket success" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
