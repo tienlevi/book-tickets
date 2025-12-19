@@ -1,6 +1,23 @@
 import redisClient from "../configs/redis.js";
 
-export const getTicketsByMatchId = async (req, res) => {};
+export const getTicketByMatchId = async (req, res) => {
+  const { uid, matchId } = req.params;
+  const redis = await redisClient();
+  if (!matchId) {
+    return res.status(404).json({ message: "Ticket match not found" });
+  }
+  try {
+    const ticket = await redis.json.get(`uid:${uid}:match:${matchId}`, "$");
+    return res.status(200).json({
+      uid,
+      matchId,
+      tickets: ticket,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export const createTicket = async (req, res) => {
   const { uid, matchId, seasonId, round } = req.body;
@@ -38,16 +55,11 @@ export const createTicket = async (req, res) => {
 export const cancelTicket = async (req, res) => {
   const { uid, matchId } = req.params;
   const redis = await redisClient();
+  if (!uid || !matchId) {
+    return res.status(404).json({ message: "User or match not found" });
+  }
   try {
-    if (!uid || !matchId) {
-      return res.status(404).json({ message: "User or match not found" });
-    }
-    const cancel = await redis.lrem(
-      REDIS_KEY.TICKETS,
-      0,
-      JSON.stringify({ uid, matchId })
-    );
-    redis.del;
+    const cancel = await redis.json.del(`uid:${uid}:match:${matchId}`, "$");
     return res.status(200).json({ cancel, message: "Cancel ticket success" });
   } catch (error) {
     console.log(error);

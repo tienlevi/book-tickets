@@ -22,12 +22,6 @@ const useLoginGoogle = () => {
     mutationFn: async (idToken: string) => {
       return await login({ idToken });
     },
-    onSuccess: (data) => {
-      if (data) {
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] });
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.USERS] });
-      }
-    },
   });
 
   const loginGoogle = async () => {
@@ -35,6 +29,8 @@ const useLoginGoogle = () => {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       mutate(idToken);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.USERS] });
       localStorage.setItem("accessToken", idToken);
     } catch (error) {
       console.error("Google sign-in error:", error);
