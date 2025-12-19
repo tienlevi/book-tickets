@@ -1,6 +1,7 @@
 import { auth } from "@/configs/firebase";
+import { QUERY_KEY } from "@/constants/query-key";
 import { login } from "@/services/auth";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 type LoginResponse = {
@@ -14,11 +15,18 @@ type LoginResponse = {
 
 const useLoginGoogle = () => {
   const provider = new GoogleAuthProvider();
+  const queryClient = useQueryClient();
 
   const { mutate, ...rest } = useMutation<LoginResponse, Error, string>({
     mutationKey: ["login-google"],
     mutationFn: async (idToken: string) => {
       return await login({ idToken });
+    },
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] });
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.USERS] });
+      }
     },
   });
 

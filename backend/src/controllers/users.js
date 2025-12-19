@@ -2,7 +2,9 @@ import admin from "../configs/firebase.js";
 
 export const getUsers = async (req, res) => {
   try {
+    const users = await admin.auth().listUsers();
     return res.status(200).json({
+      users,
       message: "Users fetched successfully",
       status: "success",
     });
