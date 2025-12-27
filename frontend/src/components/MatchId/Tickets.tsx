@@ -62,10 +62,14 @@ function Tickets({ match }: Props) {
             )}
           </>
         )}
+        {match.status.type === "inprogress" && (
+          <p className="text-gray-400 text-sm text-center py-4">
+            This match has started
+          </p>
+        )}
         {match.status.type === "finished" && (
           <p className="text-gray-400 text-sm text-center py-4">
-            ? "This match has ended. Ticket booking is no longer available." :
-            "This match is currently in progress. Ticket booking is closed."
+            This match has ended. Ticket booking is no longer available.
           </p>
         )}
       </CardContent>
