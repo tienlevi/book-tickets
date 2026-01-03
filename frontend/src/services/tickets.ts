@@ -11,6 +11,11 @@ export const getTicketByMatchId = async (uid: string, matchId: number) => {
   return response.data;
 };
 
+export const getTicketsByUser = async (uid: string) => {
+  const response = await instance.get(`/ticket/${uid}`);
+  return response.data;
+};
+
 export const bookTicket = async (data: ITicket) => {
   const response = await instance.post(`/ticket`, data);
   return response.data;

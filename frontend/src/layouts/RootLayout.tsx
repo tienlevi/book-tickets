@@ -5,6 +5,12 @@ import {
   DialogHeader,
   DialogTitle,
   Button,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui";
 import useLoginGoogle from "@/hooks/useLoginGoogle";
 import useSession from "@/hooks/useSession";
@@ -38,7 +44,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
               <span>Book Tickets</span>
             </Link>
 
-            {/* Navigation Links */}
             <div className="flex items-center gap-6">
               <Link
                 to="/"
@@ -48,13 +53,38 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
                 Home
               </Link>
               {user ? (
-                <Button
-                  onClick={() => setIsModalOpen(true)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-lg shadow-purple-500/25"
-                  aria-label="Open user menu"
-                >
-                  {user.name}
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      className="bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-lg shadow-purple-500/25"
+                      aria-label="Open user menu"
+                    >
+                      {user.name}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-48 bg-slate-900 border-white/10"
+                  >
+                    <DropdownMenuLabel className="text-gray-400">
+                      My Account
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-white/10" />
+                    <Link to={`/profile`}>
+                      <DropdownMenuItem className="cursor-pointer focus:bg-white/10">
+                        Profile{" "}
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuSeparator className="bg-white/10" />
+                    <DropdownMenuItem
+                      disabled={isPending}
+                      onClick={() => logout()}
+                      className="text-red-400 focus:text-red-300 cursor-pointer focus:bg-red-950/30"
+                    >
+                      {isPending ? "Logging out..." : "Logout"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <Button
                   onClick={() => setIsModalOpen(true)}
@@ -79,26 +109,14 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             </DialogTitle>
           </DialogHeader>
           <div className="pt-4">
-            {user ? (
-              <Button
-                disabled={isPending}
-                onClick={() => logout()}
-                variant="secondary"
-                className="w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-6"
-                aria-label="Logout"
-              >
-                Logout
-              </Button>
-            ) : (
-              <Button
-                onClick={handleGoogleLogin}
-                variant="secondary"
-                className="w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-6"
-                aria-label="Sign in with Google"
-              >
-                Continue with Google
-              </Button>
-            )}
+            <Button
+              onClick={handleGoogleLogin}
+              variant="secondary"
+              className="w-full bg-white hover:bg-gray-100 text-gray-800 font-medium py-6"
+              aria-label="Sign in with Google"
+            >
+              Continue with Google
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

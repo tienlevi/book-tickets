@@ -3,6 +3,9 @@ import redisClient from "../configs/redis.js";
 export const getTicketByMatchId = async (req, res) => {
   const { uid, matchId } = req.params;
   const redis = await redisClient();
+  if (!uid) {
+    return res.status(404).json({ message: "User not found" });
+  }
   if (!matchId) {
     return res.status(404).json({ message: "Ticket match not found" });
   }
@@ -16,6 +19,45 @@ export const getTicketByMatchId = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getTicketsByUser = async (req, res) => {
+  const { uid } = req.params;
+  const redis = await redisClient();
+  if (!uid) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  try {
+    const [cursor, keys] = await redis.scan(0, {
+      count: 50,
+      match: `uid:${uid}:*`,
+    });
+
+    if (!keys || keys.length === 0) {
+      return res.status(200).json({
+        uid,
+        tickets: [],
+        keys: [],
+        cursor,
+      });
+    }
+
+    const list = keys.map((key) => redis.json.get(key));
+
+    const tickets = await Promise.all(list || []);
+
+    return res.status(200).json({
+      uid,
+      tickets,
+      keys,
+      cursor,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
