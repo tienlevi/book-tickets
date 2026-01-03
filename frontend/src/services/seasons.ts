@@ -1,6 +1,6 @@
-import { instance } from "@/configs/axios";
+import { sofascoreApi } from "../configs/axios";
 
 export const getSeasons = async () => {
-  const response = await instance.get(`/seasons`);
+  const response = await sofascoreApi.get(`/unique-tournament/17/seasons`);
   return response.data;
 };

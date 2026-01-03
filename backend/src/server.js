@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import userRouter from "./router/users.js";
 import authRouter from "./router/auth.js";
-import matchRouter from "./router/match.js";
 import ticketRouter from "./router/ticket.js";
 
 const app = express();
@@ -31,7 +30,6 @@ app.get("/", (req, res) => {
   });
 });
 app.use("/api/v1", userRouter);
-app.use("/api/v1", matchRouter);
 app.use("/api/v1", authRouter);
 app.use("/api/v1", ticketRouter);
 

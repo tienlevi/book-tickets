@@ -1,11 +1,16 @@
-import { instance } from "@/configs/axios";
+import { sofascoreApi } from "../configs/axios";
 
-export const getMatches = async (seasonId: number, round: number) => {
-  const response = await instance.get(`/match/${seasonId}/round/${round}`);
+export const getMatches = async (
+  seasonId: number | string,
+  round: number | string
+) => {
+  const response = await sofascoreApi.get(
+    `/unique-tournament/17/season/${seasonId}/events/round/${round}`
+  );
   return response.data;
 };
 
-export const getMatchDetail = async (matchId: number) => {
-  const response = await instance.get(`/match/${matchId}`);
+export const getMatchById = async (matchId: number | string) => {
+  const response = await sofascoreApi.get(`/event/${matchId}`);
   return response.data;
 };

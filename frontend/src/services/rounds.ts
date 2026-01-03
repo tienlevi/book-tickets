@@ -1,6 +1,8 @@
-import { instance } from "@/configs/axios";
+import { sofascoreApi } from "../configs/axios";
 
-export const getRounds = async (seasonId: number) => {
-  const response = await instance.get(`/rounds/${seasonId}`);
+export const getRounds = async (season: number | string) => {
+  const response = await sofascoreApi.get(
+    `/unique-tournament/17/season/${season}/rounds`
+  );
   return response.data;
 };
