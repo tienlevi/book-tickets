@@ -23,14 +23,17 @@ export const getTicketByMatchId = async (req, res) => {
 };
 
 export const getTicketsByUser = async (req, res) => {
+  const cursorQuery = req.query.cursor || 0;
+  const itemsPerPage = 3;
+
   const { uid } = req.params;
   const redis = await redisClient();
   if (!uid) {
     return res.status(404).json({ message: "User not found" });
   }
   try {
-    const [cursor, keys] = await redis.scan(0, {
-      count: 50,
+    const [newCursor, keys] = await redis.scan(cursorQuery, {
+      count: itemsPerPage,
       match: `uid:${uid}:*`,
     });
 
@@ -39,7 +42,7 @@ export const getTicketsByUser = async (req, res) => {
         uid,
         tickets: [],
         keys: [],
-        cursor,
+        cursor: newCursor,
       });
     }
 
@@ -51,7 +54,7 @@ export const getTicketsByUser = async (req, res) => {
       uid,
       tickets,
       keys,
-      cursor,
+      cursor: newCursor,
     });
   } catch (error) {
     console.log(error.message);

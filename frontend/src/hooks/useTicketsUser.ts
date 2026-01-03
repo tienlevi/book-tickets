@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import useSession from "./useSession";
 import { QUERY_KEY } from "@/constants/query-key";
 import { getTicketsByUser } from "@/services/tickets";
@@ -13,10 +13,17 @@ interface ITicketsUser {
 function useTicketsUser() {
   const { user } = useSession();
 
-  return useQuery<ITicketsUser>({
+  return useInfiniteQuery<ITicketsUser>({
     queryKey: [QUERY_KEY.TICKETS, user?.uid],
-    queryFn: async () => {
-      return await getTicketsByUser(user?.uid || "");
+    queryFn: async ({ pageParam = "0" }) => {
+      return await getTicketsByUser(user?.uid || "", pageParam as string);
+    },
+    initialPageParam: "0",
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.cursor || lastPage.cursor === "0") {
+        return undefined;
+      }
+      return lastPage.cursor;
     },
     enabled: !!user,
   });
