@@ -1,4 +1,4 @@
-import UserTickets from "@/components/Tickets/UserTickets";
+import Tickets from "@/components/Tickets";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import useLogout from "@/hooks/useLogout";
@@ -47,7 +47,7 @@ function Profile() {
             </CardContent>
           </Card>
         </div>
-        <UserTickets />
+        <Tickets />
       </div>
     </div>
   );
