@@ -1,1 +1,1 @@
-export const sofascoreBase = "https://www.sofascore.com/api/v1";
+export const fotmobBase = "https://www.fotmob.com/api";

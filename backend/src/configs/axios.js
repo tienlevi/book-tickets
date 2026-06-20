@@ -1,8 +1,8 @@
-import { sofascoreBase } from "../constants/index.js";
+import { fotmobBase } from "../constants/index.js";
 import axios from "axios";
 
 export const fotmobApi = axios.create({
-  baseURL: sofascoreBase,
+  baseURL: fotmobBase,
   headers: {
     "Content-Type": "application/json",
     "User-Agent":
