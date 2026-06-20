@@ -4,6 +4,8 @@ import cors from "cors";
 import userRouter from "./router/users.js";
 import authRouter from "./router/auth.js";
 import ticketRouter from "./router/ticket.js";
+import seasonRouter from "./router/seasons.js";
+import matchRouter from "./router/matches.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,6 +37,8 @@ app.get("/", (req, res) => {
 app.use("/api/v1", userRouter);
 app.use("/api/v1", authRouter);
 app.use("/api/v1", ticketRouter);
+app.use("/api/v1", seasonRouter);
+app.use("/api/v1", matchRouter);
 
 app.get("/health", (req, res) => {
   res.json({
