@@ -6,6 +6,7 @@ import authRouter from "./router/auth.js";
 import ticketRouter from "./router/ticket.js";
 import seasonRouter from "./router/seasons.js";
 import matchRouter from "./router/matches.js";
+import roundRouter from "./router/round.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,6 +40,7 @@ app.use("/api/v1", authRouter);
 app.use("/api/v1", ticketRouter);
 app.use("/api/v1", seasonRouter);
 app.use("/api/v1", matchRouter);
+app.use("/api/v1", roundRouter);
 
 app.get("/health", (req, res) => {
   res.json({
