@@ -1,6 +1,9 @@
+export interface IRoundItem {
+  roundId: string;
+  localizedKey: string;
+}
+
 export interface IRound {
-  currentRound: {
-    round: number;
-  };
-  rounds: { round: number }[];
+  currentRound: IRoundItem;
+  rounds: IRoundItem[];
 }
