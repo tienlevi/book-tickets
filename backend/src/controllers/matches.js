@@ -2,19 +2,18 @@ import { fetchLeague } from "../services/leagues.js";
 import { getMatchById } from "../services/matches.js";
 
 export const getMatchesByRound = async (req, res) => {
-  const { season, round } = req.params;
-
-  if (!season || !round) {
-    return res.status(400).json({ message: "seasonId and round are required" });
-  }
+  const { season, round = "1" } = req.query;
+  console.log("🚀 ~ getMatchesByRound ~ round:", round);
 
   try {
     const data = await fetchLeague(season);
-    const matches =
-      data.fixtures.allMatches.filter((match) => match.round === round) || [];
+    const matches = data.fixtures.allMatches.filter(
+      (match) => match.round === round,
+    );
     const currentRound = data.fixtures.fixtureInfo.activeRound;
+    const rounds = data.fixtures.fixtureInfo.rounds;
 
-    return res.status(200).json({ matches, currentRound });
+    return res.status(200).json({ matches, round: { currentRound, rounds } });
   } catch (error) {
     console.log(error.message);
     return res
