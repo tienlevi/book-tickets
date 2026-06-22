@@ -3,14 +3,14 @@ import { IRound } from "@/interfaces/round";
 import { getRounds } from "@/services/rounds";
 import { useQuery } from "@tanstack/react-query";
 
-function useRound(seasonId: number) {
+function useRound(season: string) {
   return useQuery<IRound>({
-    queryKey: [QUERY_KEY.ROUNDS, seasonId],
+    queryKey: [QUERY_KEY.ROUNDS, season],
     queryFn: async () => {
-      const result = await getRounds(seasonId);
+      const result = await getRounds(season);
       return result;
     },
-    enabled: !!seasonId,
+    enabled: !!season,
   });
 }
 

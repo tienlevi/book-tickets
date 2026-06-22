@@ -2,7 +2,7 @@ import { fetchLeague } from "../services/leagues.js";
 
 export const getAvailableSeasons = async (req, res) => {
   try {
-    const data = await fetchLeague(req.seasons);
+    const data = await fetchLeague();
     return res.status(200).json(data.allAvailableSeasons);
   } catch (error) {
     console.log(error.message);
@@ -14,7 +14,7 @@ export const getAvailableSeasons = async (req, res) => {
 
 export const getSeasons = async (req, res) => {
   try {
-    const data = await fetchLeague(req.seasons);
+    const data = await fetchLeague();
     return res.status(200).json(data.seasons);
   } catch (error) {
     console.log(error.message);

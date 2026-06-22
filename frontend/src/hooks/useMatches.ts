@@ -3,12 +3,13 @@ import { IMatch } from "@/interfaces/match";
 import { getMatches } from "@/services/matches";
 import { useQuery } from "@tanstack/react-query";
 
-export function useMatches(seasonId: number, round: number) {
-  return useQuery<IMatch>({
-    queryKey: [QUERY_KEY.MATCHES, seasonId, round],
+export function useMatches(season: string, round: string) {
+  return useQuery<IMatch[]>({
+    queryKey: [QUERY_KEY.MATCHES, season, round],
     queryFn: async () => {
-      return await getMatches(seasonId, round);
+      const response = await getMatches(round, season);
+      return response || [];
     },
-    enabled: !!seasonId && !!round,
+    enabled: !!season && !!round,
   });
 }

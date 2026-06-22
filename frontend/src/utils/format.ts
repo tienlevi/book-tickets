@@ -10,3 +10,18 @@ export const formatMatchDate = (time: number) => {
 
   return formattedDate;
 };
+
+export const formatUTCString = (utcString: string): string => {
+  const timestamp = new Date(utcString).getTime();
+
+  const formattedDate = new Date(timestamp).toLocaleString("en-US", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    timeZone: "Asia/Ho_Chi_Minh",
+    hour: "numeric",
+    minute: "numeric",
+  });
+
+  return formattedDate;
+};

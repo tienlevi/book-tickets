@@ -22,7 +22,7 @@ export interface MatchStatus {
   reason: MatchReason;
 }
 
-export interface Match {
+export interface IMatch {
   round: string;
   roundName: number;
   pageUrl: string;

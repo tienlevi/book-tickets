@@ -1,17 +1,13 @@
 import { QUERY_KEY } from "@/constants/query-key";
-import { ISeasons } from "@/interfaces/seasons";
-import { getSeasons } from "@/services/seasons";
+import { getAvailableSeasons } from "@/services/seasons";
 import { useQuery } from "@tanstack/react-query";
 
 export function useSeasons() {
-  return useQuery<ISeasons[]>({
+  return useQuery<string[]>({
     queryKey: [QUERY_KEY.SEASONS],
     queryFn: async () => {
-      const result = await getSeasons();
-      return result.seasons || ([] as ISeasons[]);
+      return await getAvailableSeasons();
     },
     initialData: [],
   });
 }
-
-export function useSeasonById() {}
