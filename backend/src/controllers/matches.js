@@ -3,7 +3,6 @@ import { getMatchById } from "../services/matches.js";
 
 export const getMatchesByRound = async (req, res) => {
   const { season, round = "1" } = req.query;
-  console.log("🚀 ~ getMatchesByRound ~ round:", round);
 
   try {
     const data = await fetchLeague(season);

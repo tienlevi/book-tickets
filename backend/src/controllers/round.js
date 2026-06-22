@@ -1,8 +1,10 @@
 import { fetchLeague } from "../services/leagues.js";
 
 export const getRounds = async (req, res) => {
+  const { season } = req.query;
+
   try {
-    const data = await fetchLeague();
+    const data = await fetchLeague(season);
 
     const currentRound = data.fixtures.fixtureInfo.activeRound;
     const rounds = data.fixtures.fixtureInfo.rounds;

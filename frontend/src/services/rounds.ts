@@ -1,8 +1,6 @@
 import { instance } from "@/configs/axios";
 
-export const getRounds = async (season: number | string) => {
-  const response = await instance.get(
-    `/unique-tournament/17/season/${season}/rounds`
-  );
+export const getRounds = async (season: string) => {
+  const response = await instance.get(`/rounds`, { params: { season } });
   return response.data;
 };
