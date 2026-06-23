@@ -74,4 +74,5 @@ export interface IMatchDetail {
   finished: boolean;
   gender: string;
   location: string;
+  status: MatchStatus;
 }

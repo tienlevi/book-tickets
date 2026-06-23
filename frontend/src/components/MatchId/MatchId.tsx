@@ -25,7 +25,7 @@ function MatchId() {
     );
   }
 
-  if (isError || !data?.event) {
+  if (isError || !data) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] gap-4">
         <p className="text-white text-xl">Match not found</p>
@@ -39,8 +39,6 @@ function MatchId() {
       </div>
     );
   }
-
-  const match = data.event;
 
   return (
     <div className="min-h-[calc(100vh-64px)] px-4 py-8">
@@ -57,21 +55,21 @@ function MatchId() {
       {/* Tournament Info */}
       <div className="flex items-center gap-3 mb-8">
         <img
-          src={tournamentImage(match.tournament.uniqueTournament.id)}
-          alt={match.tournament.name}
-          className="w-10 h-10 object-contain"
+          src={tournamentImage(data.leagueId)}
+          alt={data.leagueName}
+          className="w-10 h-10 object-contain bg-white p-2 rounded-full"
           loading="lazy"
         />
         <div>
-          <h2 className="text-white font-semibold">{match.tournament.name}</h2>
-          <p className="text-gray-400 text-sm">
-            Round {match.roundInfo.round} • {match.season.name}
-          </p>
+          <h2 className="text-white font-semibold">
+            {data.homeTeam.name} vs {data.awayTeam.name}
+          </h2>
+          <p className="text-gray-400 text-sm">Round {data.matchRound}</p>
         </div>
       </div>
 
       {/* Main Match Card */}
-      <PVP match={match} />
+      <PVP match={data} />
 
       {/* Match Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -86,33 +84,21 @@ function MatchId() {
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center py-2 border-b border-white/5">
               <span className="text-gray-400">Competition</span>
-              <span className="text-white font-medium">
-                {match.tournament.name}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-2 border-b border-white/5">
-              <span className="text-gray-400">Season</span>
-              <span className="text-white font-medium">
-                {match.season.name}
-              </span>
+              <span className="text-white font-medium">{data.leagueName}</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b border-white/5">
               <span className="text-gray-400">Round</span>
-              <span className="text-white font-medium">
-                {match.roundInfo.round}
-              </span>
+              <span className="text-white font-medium">{data.matchRound}</span>
             </div>
             <div className="flex justify-between items-center py-2">
               <span className="text-gray-400">Stadium</span>
-              <span className="text-white font-medium">
-                {match.venue.stadium.name}
-              </span>
+              <span className="text-white font-medium">{data.location}</span>
             </div>
           </CardContent>
         </Card>
 
         {/* Ticket Booking */}
-        <Tickets match={match} />
+        {/* <Tickets match={data} /> */}
       </div>
     </div>
   );

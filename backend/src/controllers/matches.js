@@ -24,9 +24,11 @@ export const getMatch = async (req, res) => {
 
   try {
     const data = await getMatchById(id);
+    const status = data.header.status;
 
     return res.status(200).json({
       ...data.general,
+      status,
       location: data.content.matchFacts.infoBox.Stadium.name,
     });
   } catch (error) {
