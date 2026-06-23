@@ -65,18 +65,17 @@ export const getTicketsByUser = async (req, res) => {
 };
 
 export const createTicket = async (req, res) => {
-  const { uid, matchId, seasonId, round } = req.body;
+  const { uid, matchId, round } = req.body;
   const now = new Date().getTime();
   const redis = await redisClient();
   try {
     const existingTicket = await redis.json.get(
       `uid:${uid}:match:${matchId}`,
-      "$"
+      "$",
     );
     const data = await redis.json.set(`uid:${uid}:match:${matchId}`, "$", {
       uid,
       matchId,
-      seasonId,
       round,
       created_at: now,
     });

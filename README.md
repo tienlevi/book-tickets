@@ -17,6 +17,7 @@ book-tickets/
 ## Commands
 
 ### Frontend (`frontend/`)
+
 Uses **pnpm** as the package manager.
 
 ```bash
@@ -27,6 +28,7 @@ pnpm preview    # Preview production build
 ```
 
 ### Backend (`backend/`)
+
 Uses **npm** as the package manager.
 
 ```bash
@@ -37,6 +39,7 @@ npm start       # Start for production
 ## Environment Variables
 
 ### Frontend (`frontend/.env`)
+
 ```
 VITE_BASE_URL=http://localhost:3000
 VITE_FIREBASE_API_KEY=
@@ -49,6 +52,7 @@ VITE_FIREBASE_MEASUREMENT_ID=
 ```
 
 ### Backend (`backend/.env`)
+
 ```
 FIREBASE_PROJECT_ID=
 FIREBASE_PRIVATE_KEY=
@@ -67,6 +71,7 @@ PORT=3000
 **Path alias:** `@/` maps to `frontend/src/`.
 
 **Data flow:**
+
 - `src/configs/firebase.ts` — Firebase client app (Auth + Firestore)
 - `src/configs/axios.ts` — Two Axios instances: `instance` (backend API at `VITE_BASE_URL/api/v1`) and `sofascoreApi` (Sofascore public API)
 - `src/services/` — Raw API call functions using the two axios instances
@@ -79,6 +84,7 @@ PORT=3000
 **Session:** `useSession` hook queries `GET /api/v1/auth` (passes stored token), returns the decoded user `{ uid, name, email, picture }`.
 
 **Pages:**
+
 - `/` — Home: match list by season/round
 - `/match/:matchId` — Match detail + book ticket button
 - `/profile` — User's booked tickets (paginated via Redis SCAN cursor)
@@ -99,7 +105,7 @@ PORT=3000
 | POST | `/ticket` | `createTicket` |
 | DELETE | `/ticket/:uid/match/:matchId` | `cancelTicket` |
 
-**Redis data model:** Tickets are stored as JSON documents with key pattern `uid:{uid}:match:{matchId}`. Ticket shape: `{ uid, matchId, seasonId, round, created_at }`. Pagination uses `SCAN` with `match: uid:{uid}:*`.
+**Redis data model:** Tickets are stored as JSON documents with key pattern `uid:{uid}:match:{matchId}`. Ticket shape: `{ uid, matchId, round, created_at }`. Pagination uses `SCAN` with `match: uid:{uid}:*`.
 
 **Auth middleware (`verifyToken.js`):** Extracts Bearer token from `Authorization` header, verifies with `admin.auth().verifyIdToken()`.
 

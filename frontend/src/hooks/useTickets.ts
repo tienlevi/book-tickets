@@ -8,7 +8,7 @@ export interface ITicketList extends ITicket {
   tickets: [];
 }
 
-function useTickets(matchId?: number) {
+function useTickets(matchId?: string) {
   const { user } = useSession();
 
   return useQuery<ITicketList>({

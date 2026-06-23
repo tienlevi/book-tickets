@@ -6,14 +6,14 @@ export const getTickets = async () => {
   return response.data;
 };
 
-export const getTicketByMatchId = async (uid: string, matchId: number) => {
+export const getTicketByMatchId = async (uid: string, matchId: string) => {
   const response = await instance.get(`/ticket/${uid}/match/${matchId}`);
   return response.data;
 };
 
 export const getTicketsByUser = async (
   uid: string,
-  cursor: string | number = 0
+  cursor: string | number = 0,
 ) => {
   const response = await instance.get(`/ticket/${uid}`, {
     params: { cursor: cursor },

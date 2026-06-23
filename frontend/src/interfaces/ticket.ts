@@ -1,7 +1,6 @@
 export interface ITicket {
   uid?: string;
-  matchId: number;
-  seasonId: number;
-  round: number;
+  matchId: string;
+  round: number | string;
   created_at?: number;
 }
