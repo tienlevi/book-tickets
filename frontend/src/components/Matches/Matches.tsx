@@ -128,11 +128,11 @@ function Matches() {
 
             <div className="flex items-center justify-between gap-4 mt-4">
               <div className="flex flex-col items-center gap-3 flex-1">
-                <div className="w-16 h-16 rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
+                <div className="rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
                   <img
                     src={clubImage(matchItem.home.id)}
                     alt={`${matchItem.home.name} logo`}
-                    className="w-full h-full object-contain"
+                    className="w-10 h-10"
                     loading="lazy"
                   />
                 </div>
@@ -150,11 +150,11 @@ function Matches() {
               </div>
 
               <div className="flex flex-col items-center gap-3 flex-1">
-                <div className="w-16 h-16 rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
+                <div className="rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
                   <img
                     src={clubImage(matchItem.away.id)}
                     alt={`${matchItem.away.name} logo`}
-                    className="w-full h-full object-contain"
+                    className="w-10 h-10"
                     loading="lazy"
                   />
                 </div>
