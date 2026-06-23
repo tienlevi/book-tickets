@@ -10,56 +10,62 @@ import { useSeasons } from "@/hooks/useSeasons";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { clubImage } from "@/utils/images";
-import { formatMatchDate } from "@/utils/format";
-import { MatchStatus } from "@/interfaces/types";
-import useRound from "@/hooks/useRound";
+import { formatUTCString } from "@/utils/format";
 import { Link, useNavigate } from "react-router-dom";
+import useRound from "@/hooks/useRound";
+import { IMatch } from "@/interfaces/match";
 
 function Matches() {
   const params = new URL(window.location.href);
-  const seasonId = params.searchParams.get("seasonId");
+  const season = params.searchParams.get("season");
   const roundParams = params.searchParams.get("round");
   const navigate = useNavigate();
   const { data: seasons, isLoading: loadingSeasons } = useSeasons();
-  const currentSeason = seasons[0]?.id;
-  const [selectedSeason, setSelectedSeason] = useState(Number(seasonId));
-  const { data: round, isLoading: loadingRounds } = useRound(selectedSeason);
-  const [selectedRound, setSelectedRound] = useState(Number(roundParams));
-  const { data: match, isLoading: loadingMatches } = useMatches(
-    selectedSeason,
-    selectedRound!
+  const [selectedSeason, setSelectedSeason] = useState(season);
+  const { data: round, isLoading: loadingRounds } = useRound(
+    selectedSeason || "",
+  );
+  const [selectedRound, setSelectedRound] = useState(roundParams);
+  const { data: matches, isLoading: loadingMatches } = useMatches(
+    selectedSeason!,
+    selectedRound!,
   );
   const isLoading = loadingSeasons || loadingMatches || loadingRounds;
 
   const handleSelectSeason = (value: string) => {
-    navigate(`/?seasonId=${value}&round=${selectedRound}`);
-    setSelectedSeason(+value);
+    navigate(`/?season=${value}&round=${selectedRound}`);
+    setSelectedSeason(value);
   };
 
   const handleSelectRound = (value: string) => {
-    navigate(`/?seasonId=${selectedSeason}&round=${value}`);
-    setSelectedRound(+value);
+    navigate(`/?season=${selectedSeason}&round=${value}`);
+    setSelectedRound(value);
   };
 
-  const renderStatus = (status: MatchStatus) => {
-    switch (status) {
-      case "notstarted":
-        return <div className="text-yellow-500">Not started</div>;
-      case "finished":
-        return <div className="text-green-500">Finished</div>;
-      default:
-        return <div className="text-white">In match</div>;
+  const renderStatus = (match: IMatch) => {
+    const isStarted = match.status.started;
+    const isFinished = match.status.finished;
+    const isCancelled = match.status.cancelled;
+
+    if (isStarted && !isFinished && !isCancelled) {
+      return <div className="text-white">In match</div>;
+    } else if (isStarted && isFinished && !isCancelled) {
+      return <div className="text-green-500">Finished</div>;
+    } else if (!isStarted && !isFinished && isCancelled) {
+      return <div className="text-red-500">Cancelled</div>;
+    } else {
+      return <div className="text-yellow-500">Not started</div>;
     }
   };
 
   useEffect(() => {
-    if (!seasonId) {
-      setSelectedSeason(currentSeason);
+    if (!season) {
+      setSelectedSeason(seasons[0]?.replace("/", "-"));
     }
     if (!roundParams) {
-      setSelectedRound(round?.currentRound?.round ?? 1);
+      setSelectedRound(round?.currentRound.roundId || "");
     }
-  }, [selectedRound, selectedSeason, seasons, round]);
+  }, [selectedRound, selectedSeason, seasons, season, round]);
 
   if (isLoading) {
     return <Spinner className="size-10! text-white" />;
@@ -72,16 +78,17 @@ function Matches() {
         <div className="flex items-center gap-2">
           <div className="text-white">Season: </div>
           <Select
-            value={selectedSeason?.toString()}
+            value={selectedSeason!}
+            defaultValue={seasons[0]}
             onValueChange={handleSelectSeason}
           >
-            <SelectTrigger variant="primary" className="w-[200px]">
+            <SelectTrigger variant="primary" className="w-50">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent variant="primary" className="h-[200px]">
+            <SelectContent variant="primary" className="h-50">
               {seasons.map((season) => (
-                <SelectItem key={season.id} value={season.id.toString()}>
-                  {season.name}
+                <SelectItem key={season} value={season.replace("/", "-")}>
+                  {season}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -93,13 +100,13 @@ function Matches() {
             value={selectedRound?.toString()}
             onValueChange={handleSelectRound}
           >
-            <SelectTrigger variant="primary" className="w-[200px]">
+            <SelectTrigger variant="primary" className="w-50">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent variant="primary" className="h-[200px]">
+            <SelectContent variant="primary" className="h-50">
               {round?.rounds.map((round) => (
-                <SelectItem key={round.round} value={round.round.toString()}>
-                  {round.round}
+                <SelectItem key={round.roundId} value={round.roundId}>
+                  {round.roundId}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -109,70 +116,55 @@ function Matches() {
 
       {/* Matches Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {match?.events.map((matchItem) => (
+        {matches?.map((matchItem) => (
           <Link
             className="group relative bg-linear-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer"
-            key={`Match: ${matchItem.homeTeam.name} vs ${matchItem.awayTeam.name}`}
-            to={`/match/${matchItem.id}?slug=${matchItem.slug}`}
+            key={`Match: ${matchItem.home.name} vs ${matchItem.away.name}`}
+            to={`/match/${matchItem.id}`}
           >
-            {/* Match Time Badge */}
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-              {formatMatchDate(matchItem.startTimestamp)}
+              {formatUTCString(matchItem.status.utcTime)}
             </div>
 
-            {/* Teams Container */}
             <div className="flex items-center justify-between gap-4 mt-4">
-              {/* Home Team */}
               <div className="flex flex-col items-center gap-3 flex-1">
                 <div className="w-16 h-16 rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
                   <img
-                    src={clubImage(matchItem.homeTeam.id)}
-                    alt={`${matchItem.homeTeam.name} logo`}
+                    src={clubImage(matchItem.home.id)}
+                    alt={`${matchItem.home.name} logo`}
                     className="w-full h-full object-contain"
                     loading="lazy"
                   />
                 </div>
                 <span className="text-white font-semibold text-sm text-center line-clamp-2">
-                  {matchItem.homeTeam.name}
+                  {matchItem.home.name}
                 </span>
               </div>
 
-              {/* VS & Time */}
               <div className="flex items-center gap-2">
                 <div className="bg-white/5 rounded-lg px-4 py-2 border border-white/10">
                   <span className="text-emerald-400 font-bold text-lg">
-                    {matchItem.homeScore.display || 0}
-                  </span>
-                </div>
-                <span className="text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-cyan-400">
-                  VS
-                </span>
-                <div className="bg-white/5 rounded-lg px-4 py-2 border border-white/10">
-                  <span className="text-emerald-400 font-bold text-lg">
-                    {matchItem.awayScore.display || 0}
+                    {matchItem.status.scoreStr || "0 - 0"}
                   </span>
                 </div>
               </div>
 
-              {/* Away Team */}
               <div className="flex flex-col items-center gap-3 flex-1">
                 <div className="w-16 h-16 rounded-full bg-white/10 p-2 ring-2 ring-white/20 group-hover:ring-emerald-500/50 transition-all">
                   <img
-                    src={clubImage(matchItem.awayTeam.id)}
-                    alt={`${matchItem.awayTeam.name} logo`}
+                    src={clubImage(matchItem.away.id)}
+                    alt={`${matchItem.away.name} logo`}
                     className="w-full h-full object-contain"
                     loading="lazy"
                   />
                 </div>
                 <span className="text-white font-semibold text-sm text-center line-clamp-2">
-                  {matchItem.awayTeam.name}
+                  {matchItem.away.name}
                 </span>
               </div>
             </div>
 
-            <div className="text-center">
-              {renderStatus(matchItem.status.type)}
-            </div>
+            <div className="text-center">{renderStatus(matchItem)}</div>
           </Link>
         ))}
       </div>

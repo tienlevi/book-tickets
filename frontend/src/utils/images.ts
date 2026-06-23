@@ -1,9 +1,9 @@
 export const clubImage = (id: string | number) => {
-  return `https://img.sofascore.com/api/v1/team/${id}/image`;
+  return `https://images.fotmob.com/image_resources/logo/teamlogo/${id}_xsmall.png`;
 };
 
 export const tournamentImage = (id: string | number) => {
-  return `https://img.sofascore.com/api/v1/unique-tournament/${id}/image`;
+  return `https://images.fotmob.com/image_resources/logo/leaguelogo/${id}.png`;
 };
 
 export const countryImage = (alpha: string) => {
