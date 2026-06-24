@@ -10,7 +10,7 @@ function useCancelTicket() {
 
   return useMutation({
     mutationKey: ["cancel-ticket"],
-    mutationFn: async (matchId: number) => {
+    mutationFn: async (matchId: string) => {
       return await cancelTicket(user?.uid || "", matchId);
     },
     onSuccess: (data) => {

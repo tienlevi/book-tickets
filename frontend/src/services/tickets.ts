@@ -26,7 +26,7 @@ export const bookTicket = async (data: ITicket) => {
   return response.data;
 };
 
-export const cancelTicket = async (uid: string, matchId: number) => {
+export const cancelTicket = async (uid: string, matchId: string) => {
   const response = await instance.delete(`/ticket/${uid}/match/${matchId}`);
   return response.data;
 };

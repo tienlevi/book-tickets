@@ -98,7 +98,7 @@ function MatchId() {
         </Card>
 
         {/* Ticket Booking */}
-        {/* <Tickets match={data} /> */}
+        <Tickets match={data} />
       </div>
     </div>
   );
