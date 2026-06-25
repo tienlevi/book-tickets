@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui";
 import { QUERY_KEY } from "@/constants/query-key";
-import useTicketsUser from "@/hooks/useTicketsUser";
+import { useTicketsUser, useTicketsUserParams } from "@/hooks/useTicketsUser";
 import { IMatchDetail } from "@/interfaces/match";
 import { getMatchById } from "@/services/matches";
 import { useQuery } from "@tanstack/react-query";
@@ -17,9 +17,10 @@ import Info from "./Info";
 
 function Tickets() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useTicketsUser();
+    useTicketsUserParams();
 
-  const { data: tickets, isLoading: isLoadingTicket } = useQuery<
+  const { data: tickets } = useTicketsUser();
+  const { data: matches, isLoading: isLoadingTicket } = useQuery<
     IMatchDetail[]
   >({
     queryKey: [QUERY_KEY.MATCHES, data?.pages],
@@ -34,6 +35,13 @@ function Tickets() {
     refetchOnWindowFocus: true,
   });
 
+  const sortMatchesByTicket =
+    matches?.sort((a, b) => {
+      const tA = tickets?.find((t) => t.matchId === a.matchId)?.created_at ?? 0;
+      const tB = tickets?.find((t) => t.matchId === b.matchId)?.created_at ?? 0;
+      return tB - tA;
+    }) || [];
+
   return (
     <div className="md:col-span-2">
       <Card>
@@ -44,21 +52,27 @@ function Tickets() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4 overflow-auto h-[600px]">
+          <div className="grid grid-cols-1 gap-4 overflow-auto h-150">
             {isLoadingTicket ? (
               <Spinner />
-            ) : tickets?.length === 0 ? (
+            ) : matches?.length === 0 ? (
               <p className="text-center text-gray-500">No tickets found.</p>
             ) : (
-              tickets?.map((ticket) => (
-                <div
-                  key={ticket.event.id}
-                  className="border rounded-xl p-4 flex flex-col gap-3"
-                >
-                  <Teams ticket={ticket} />
-                  <Info ticket={ticket} />
-                </div>
-              ))
+              sortMatchesByTicket.map((match) => {
+                const ticket = tickets?.find(
+                  (t) => t.matchId === match.matchId,
+                );
+
+                return (
+                  <div
+                    key={match.matchId}
+                    className="border rounded-xl p-4 flex flex-col gap-3"
+                  >
+                    <Teams ticket={match} />
+                    <Info match={match} ticket={ticket!} />
+                  </div>
+                );
+              })
             )}
           </div>
           {hasNextPage && (

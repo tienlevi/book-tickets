@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import useSession from "./useSession";
 import { QUERY_KEY } from "@/constants/query-key";
 import { getTicketsByUser } from "@/services/tickets";
@@ -10,7 +10,7 @@ interface ITicketsUser {
   cursor: string;
 }
 
-function useTicketsUser() {
+export function useTicketsUserParams() {
   const { user } = useSession();
 
   return useInfiniteQuery<ITicketsUser>({
@@ -29,4 +29,15 @@ function useTicketsUser() {
   });
 }
 
-export default useTicketsUser;
+export function useTicketsUser() {
+  const { user } = useSession();
+
+  return useQuery<ITicket[]>({
+    queryKey: [QUERY_KEY.TICKETS, QUERY_KEY.USERS, user?.uid],
+    queryFn: async () => {
+      const response = await getTicketsByUser(user?.uid || "");
+      return response.tickets;
+    },
+    enabled: !!user,
+  });
+}

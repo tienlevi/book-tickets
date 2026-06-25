@@ -7,44 +7,51 @@ function Teams({ ticket }: { ticket: IMatchDetail }) {
       {/* Home team */}
       <div className="flex flex-col items-center gap-1 flex-1">
         <img
-          src={clubImage(ticket.event.homeTeam.id)}
-          alt={ticket.event.homeTeam.name}
+          src={clubImage(ticket.homeTeam.id)}
+          alt={ticket.homeTeam.name}
           className="w-10 h-10 object-contain"
         />
         <p className="text-xs font-medium text-center leading-tight">
-          {ticket.event.homeTeam.shortName}
+          {ticket.homeTeam.name}
         </p>
       </div>
 
       {/* Score / VS */}
       <div className="flex flex-col items-center gap-1">
         <p className="text-2xl font-bold tabular-nums">
-          {ticket.event.homeScore.display ?? "-"}&nbsp;:&nbsp;
-          {ticket.event.awayScore.display ?? "-"}
+          {ticket.status.scoreStr ?? "-"}
         </p>
 
         <span
-          className={` ${
-            ticket.event.status.type === "inprogress"
-              ? "text-yellow-500"
-              : ticket.event.status.type === "notstarted"
-                ? "text-green-500"
-                : "text-red-500"
-          }`}
+          className={
+            ticket.status.finished
+              ? "text-red-500"
+              : ticket.status.started
+                ? "text-yellow-500"
+                : ticket.status.cancelled
+                  ? "text-gray-400"
+                  : "text-green-500"
+          }
         >
-          {ticket.event.status.description}
+          {ticket.status.finished
+            ? "Finished"
+            : ticket.status.started
+              ? "Live"
+              : ticket.status.cancelled
+                ? "Cancelled"
+                : "Not Started"}
         </span>
       </div>
 
       {/* Away team */}
       <div className="flex flex-col items-center gap-1 flex-1">
         <img
-          src={clubImage(ticket.event.awayTeam.id)}
-          alt={ticket.event.awayTeam.name}
+          src={clubImage(ticket.awayTeam.id)}
+          alt={ticket.awayTeam.name}
           className="w-10 h-10 object-contain"
         />
         <p className="text-xs font-medium text-center leading-tight">
-          {ticket.event.awayTeam.shortName}
+          {ticket.awayTeam.name}
         </p>
       </div>
     </div>
